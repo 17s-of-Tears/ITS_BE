@@ -6,7 +6,7 @@ import { UserRequestDto } from '@users/dtos/users.request.dto'
 import { User } from '@users/users.schema'
 
 @Injectable()
-export class UserRepository {
+export class UsersRepository {
 	constructor(
 		@InjectModel(User.name) private readonly userModel: Model<User>
 	) {}
@@ -20,5 +20,11 @@ export class UserRepository {
 	//* 유저 생성
 	async createUsers(data: UserRequestDto) {
 		return await this.userModel.create(data)
+	}
+
+	//* 해당 유저찾기
+	async findUserByEmail(email: string): Promise<User | null> {
+		const user = await this.userModel.findOne({ email })
+		return user
 	}
 }
