@@ -27,4 +27,10 @@ export class UsersRepository {
 		const user = await this.userModel.findOne({ email })
 		return user
 	}
+
+	//* 해당 유저찾기, 비밀번호 제외
+	async findUserByIdWithoutPassword(userId: string): Promise<User> {
+		const user = await this.userModel.findById(userId).select('-password')
+		return user
+	}
 }

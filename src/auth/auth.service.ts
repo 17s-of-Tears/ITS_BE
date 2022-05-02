@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 
-import { LoginRequestDto } from '@auth/dtos/Login.request.dto'
+import { LoginRequestDto } from '@auth/dtos/login.request.dto'
 import { UsersRepository } from '@users/users.repository'
-import { JwtService } from '@nestjs/jwt'
+import { IPayload } from '@typings/user'
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,7 @@ export class AuthService {
 			throw new UnauthorizedException('이메일과 비밀번호를 확인해주세요.')
 
 		//* token 발급
-		const payload = { email, sub: user.id }
+		const payload: IPayload = { email, sub: user.id }
 		return { token: this.jwtService.sign(payload) }
 	}
 }
