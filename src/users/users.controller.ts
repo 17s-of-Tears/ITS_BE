@@ -1,9 +1,19 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	UploadedFile,
+	UseGuards,
+	UseInterceptors
+} from '@nestjs/common'
+import { FileInterceptor } from '@nestjs/platform-express'
 
 import { LoginRequestDto } from '@auth/dtos/login.request.dto'
 import { JwtAuthGuard } from '@auth/jwt/jwt.guard'
 import { AuthService } from '@auth/auth.service'
 import { CurrentUser } from '@common/decorators/user.decorator'
+import { multerOptions } from '@common/utils/multer.options'
 import { UserRequestDto } from '@users/dtos/users.request.dto'
 import { User } from '@users/users.schema'
 import { UsersService } from '@users/users.service'
@@ -32,5 +42,16 @@ export class UsersController {
 	@Post('login')
 	async login(@Body() body: LoginRequestDto) {
 		return await this.authService.jwtLogIn(body)
+	}
+
+	//* 유저 프로필 사진 변경 api
+	@UseGuards(JwtAuthGuard)
+	@UseInterceptors(FileInterceptor('image', multerOptions('users')))
+	@Post('upload')
+	async uploadUserImg(
+		@CurrentUser() user: User,
+		@UploadedFile() file: Express.Multer.File
+	) {
+		return await this.usersService.uploadImg(user, file)
 	}
 }

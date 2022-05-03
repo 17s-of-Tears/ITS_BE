@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt'
 
 import { UserRequestDto } from '@users/dtos/users.request.dto'
 import { UsersRepository } from '@users/users.repository'
+import { User } from './users.schema'
 
 @Injectable()
 export class UsersService {
@@ -21,5 +22,15 @@ export class UsersService {
 		const newUser = await this.usersRepository.createUsers(newUserData)
 
 		return newUser.readOnlyData
+	}
+
+	//* 프로필 이미지 변경 service
+	async uploadImg(user: User, file: Express.Multer.File) {
+		const fileName = `users/${file.filename}`
+		const newUser = await this.usersRepository.findByIdAndUpdateImg(
+			user.id,
+			fileName
+		)
+		return newUser
 	}
 }

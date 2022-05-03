@@ -33,4 +33,12 @@ export class UsersRepository {
 		const user = await this.userModel.findById(userId).select('-password')
 		return user
 	}
+
+	//*해당 유저 프로필 이미지 저장
+	async findByIdAndUpdateImg(userId: string, fileName: string) {
+		const user = await this.userModel.findById(userId)
+		user.imgUrl = `${process.env.BASE_URI}/media/${fileName}`
+		const newUser = await user.save()
+		return newUser.readOnlyData
+	}
 }
