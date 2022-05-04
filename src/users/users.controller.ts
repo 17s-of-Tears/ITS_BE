@@ -32,6 +32,12 @@ export class UsersController {
 		return user.readOnlyData
 	}
 
+	//* 모든 회원 정보 조회 api
+	@Get('all')
+	getAllUser() {
+		return this.usersService.getAllUser()
+	}
+
 	//* 회원가입 api
 	@Post('signup')
 	async signup(@Body() body: UserRequestDto) {

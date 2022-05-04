@@ -41,4 +41,9 @@ export class UsersRepository {
 		const newUser = await user.save()
 		return newUser.readOnlyData
 	}
+
+	//* 모든 유저 찾기
+	async findAll() {
+		return await this.userModel.find()
+	}
 }

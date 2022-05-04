@@ -33,4 +33,11 @@ export class UsersService {
 		)
 		return newUser
 	}
+
+	//* 모든 유저 조회 service
+	async getAllUser() {
+		const allUser = await this.usersRepository.findAll()
+		const readOnlyUsers = allUser.map(user => user.readOnlyData)
+		return readOnlyUsers
+	}
 }
