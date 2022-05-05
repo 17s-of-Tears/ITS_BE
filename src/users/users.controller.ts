@@ -9,12 +9,12 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
-import { LoginRequestDto } from '@auth/dtos/login.request.dto'
+import { LoginRequestDto } from '@auth/dto/login.request.dto'
 import { JwtAuthGuard } from '@auth/jwt/jwt.guard'
 import { AuthService } from '@auth/auth.service'
 import { CurrentUser } from '@common/decorators/user.decorator'
 import { multerOptions } from '@common/utils/multer.options'
-import { UserRequestDto } from '@users/dtos/users.request.dto'
+import { UserRequestDto } from '@users/dto/users.request.dto'
 import { User } from '@users/users.schema'
 import { UsersService } from '@users/users.service'
 

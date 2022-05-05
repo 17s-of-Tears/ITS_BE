@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import * as bcrypt from 'bcrypt'
 import { Model } from 'mongoose'
 
-import { LoginRequestDto } from '@auth/dtos/login.request.dto'
+import { LoginRequestDto } from '@auth/dto/login.request.dto'
 import { IPayload } from '@typings/user'
 import { User } from '@users/users.schema'
 
