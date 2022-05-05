@@ -19,7 +19,7 @@ import { UsersModule } from '@users/users.module'
 	providers: [AppService]
 })
 export class AppModule implements NestModule {
-	//* 개발, 배포 모드 분기처리
+	//* 개발 모드 분기처리
 	private readonly isDev: boolean = process.env.MODE === 'dev' ? true : false
 	configure() {
 		mongoose.set('debug', this.isDev)
