@@ -9,9 +9,8 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 
-import { LoginRequestDto } from '@auth/dto/login.request.dto'
-import { JwtAuthGuard } from '@auth/jwt/jwt.guard'
-import { AuthService } from '@auth/auth.service'
+import { LoginRequestDto } from '@users/dto/login.request.dto'
+import { JwtAuthGuard } from '@users/jwt/jwt.guard'
 import { CurrentUser } from '@common/decorators/user.decorator'
 import { multerOptions } from '@common/utils/multer.options'
 import { UserRequestDto } from '@users/dto/users.request.dto'
@@ -20,10 +19,7 @@ import { UsersService } from '@users/users.service'
 
 @Controller('users')
 export class UsersController {
-	constructor(
-		private readonly usersService: UsersService,
-		private readonly authService: AuthService
-	) {}
+	constructor(private readonly usersService: UsersService) {}
 
 	//* 현재 회원 정보 조회 api
 	@UseGuards(JwtAuthGuard)
@@ -47,7 +43,7 @@ export class UsersController {
 	//* 로그인 api
 	@Post('login')
 	async login(@Body() body: LoginRequestDto) {
-		return await this.authService.jwtLogIn(body)
+		return await this.usersService.jwtLogIn(body)
 	}
 
 	//* 유저 프로필 사진 변경 api
