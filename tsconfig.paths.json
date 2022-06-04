@@ -2,9 +2,9 @@
 	"compilerOptions": {
 		"baseUrl": "./",
 		"paths": {
-			"@auth/*": ["./src/auth/*"],
 			"@comments/*": ["./src/comments/*"],
 			"@common/*": ["./src/common/*"],
+			"@teams/*": ["./src/teams/*"],
 			"@posts/*": ["./src/posts/*"],
 			"@typings/*": ["./src/typings/*"],
 			"@users/*": ["./src/users/*"],

@@ -5,12 +5,14 @@ import * as mongoose from 'mongoose'
 
 import { AppController } from '@src/app.controller'
 import { AppService } from '@src/app.service'
+import { TeamsModule } from '@teams/teams.module'
 import { UsersModule } from '@users/users.module'
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
 		MongooseModule.forRoot(process.env.MONGODB_URI),
+		TeamsModule,
 		UsersModule
 	],
 	controllers: [AppController],
