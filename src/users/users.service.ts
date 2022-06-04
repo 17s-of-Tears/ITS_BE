@@ -54,9 +54,9 @@ export class UsersService {
 
 		const hashedPassword = await bcrypt.hash(password, 10)
 		const newUserData = { email, nickname, password: hashedPassword }
-		const newUser = await this.userModel.create(newUserData)
+		await this.userModel.create(newUserData)
 
-		return newUser.readOnlyData
+		return { success: true }
 	}
 
 	//* 로그인 service
@@ -78,7 +78,7 @@ export class UsersService {
 
 		//* token 발급
 		const payload: IPayload = { email, sub: user.id }
-		return { token: this.jwtService.sign(payload) }
+		return { user: user.readOnlyData, token: this.jwtService.sign(payload) }
 	}
 
 	//* 프로필 이미지 변경 service
