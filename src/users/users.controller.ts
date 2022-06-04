@@ -25,7 +25,8 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Get('me')
 	getCurrentUser(@CurrentUser() user: User) {
-		return user.readOnlyData
+		console.log(user)
+		return user ? user.readOnlyData : null
 	}
 
 	//* 모든 회원 정보 조회 api
