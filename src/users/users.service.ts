@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import { Model } from 'mongoose'
 
+import { randomNumber } from '@common/utils/random-number'
 import { LoginRequestDto } from '@users/dto/login.request.dto'
 import { UserRequestDto } from '@users/dto/users.request.dto'
 import { User } from '@users/users.schema'
@@ -53,7 +54,8 @@ export class UsersService {
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
-		const newUserData = { email, nickname, password: hashedPassword }
+		const imgUrl = `default_avatar_${randomNumber(1, 16)}`
+		const newUserData = { email, nickname, password: hashedPassword, imgUrl }
 		await this.userModel.create(newUserData)
 
 		return { success: true }
@@ -86,6 +88,7 @@ export class UsersService {
 		if (!file) throw new HttpException('이미지정보가 없습니다.', 400)
 		const currentUser = await this.userModel.findById(user.id)
 		currentUser.imgUrl = `${process.env.BASE_URI}/media/users/${file.filename}`
+		currentUser.isImg = true
 		const newUser = await currentUser.save()
 		return newUser.readOnlyData
 	}

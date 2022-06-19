@@ -49,9 +49,7 @@ export class TeamsService {
 	async getOneTeam(id: string) {
 		const team = await this.teamModel.findById(id)
 		if (!team) throw new HttpException('팀이 존재하지 않습니다.', 400)
-		team.hits += 1
-		const newTeam = await team.save()
-		return newTeam.readOnlyData
+		return team.readOnlyData
 	}
 
 	//* 팀 생성 service
@@ -62,4 +60,15 @@ export class TeamsService {
 		})
 		return newTeam.readOnlyData
 	}
+
+	//* 조회수 증가 service
+	async incViewCount(postId: string) {
+		const team = await this.teamModel.findById(postId)
+		team.hits += 1
+		const newTeam = await team.save()
+
+		return newTeam.hits
+	}
+
+	//* 좋아요 api
 }
