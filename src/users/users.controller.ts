@@ -25,7 +25,6 @@ export class UsersController {
 	@UseGuards(JwtAuthGuard)
 	@Get('me')
 	getCurrentUser(@CurrentUser() user: User) {
-		console.log(user)
 		return user ? user.readOnlyData : null
 	}
 
