@@ -10,7 +10,10 @@ import { Model } from 'mongoose'
 
 import { randomNumber } from '@common/utils/random-number'
 import { LoginRequestDto } from '@users/dto/login.request.dto'
-import { UserRequestDto } from '@users/dto/users.request.dto'
+import {
+	UserChangeNicknameDto,
+	UserRequestDto
+} from '@users/dto/users.request.dto'
 import { User } from '@users/users.schema'
 import { IPayload } from '@typings/user'
 
@@ -84,12 +87,53 @@ export class UsersService {
 	}
 
 	//* 프로필 이미지 변경 service
+	async changeNickname(user: User, { nickname }: UserChangeNicknameDto) {
+		const exUser = await this.userModel.findOne({ nickname })
+		if (exUser)
+			throw new UnauthorizedException('해당 닉네임은 이미 존재합니다.')
+		const currentUser = await this.userModel.findById(user.id)
+		currentUser.nickname = nickname
+		const newUser = await currentUser.save()
+
+		return {
+			nickname: newUser.nickname
+		}
+	}
+
+	//* 프로필 이미지 변경 service
 	async uploadImg(user: User, file: Express.Multer.File) {
 		if (!file) throw new HttpException('이미지정보가 없습니다.', 400)
 		const currentUser = await this.userModel.findById(user.id)
 		currentUser.imgUrl = `${process.env.BASE_URI}/media/users/${file.filename}`
 		currentUser.isImg = true
 		const newUser = await currentUser.save()
-		return newUser.readOnlyData
+
+		return {
+			imgUrl: newUser.imgUrl,
+			isImg: newUser.isImg
+		}
+	}
+
+	//* 프로필 이미지 삭제 service
+	async deleteImg(user: User) {
+		const currentUser = await this.userModel.findById(user.id)
+		currentUser.imgUrl = `default_avatar_${randomNumber(1, 16)}`
+		currentUser.isImg = false
+		const newUser = await currentUser.save()
+
+		return {
+			imgUrl: newUser.imgUrl,
+			isImg: newUser.isImg
+		}
+	}
+
+	//* 회원탈퇴 service
+	async deleteUser(user: User, targetId: string) {
+		if (user.id === targetId) {
+			const deleteUser = await this.userModel.findByIdAndDelete(targetId)
+			return deleteUser.id
+		} else {
+			throw new UnauthorizedException('유저정보가 일치하지 않습니다.')
+		}
 	}
 }

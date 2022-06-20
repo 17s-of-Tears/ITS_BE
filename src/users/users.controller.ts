@@ -1,7 +1,9 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
+	Param,
 	Post,
 	UploadedFile,
 	UseGuards,
@@ -12,7 +14,10 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { CurrentUser } from '@common/decorators/user.decorator'
 import { multerOptions } from '@common/utils/multer.options'
 import { LoginRequestDto } from '@users/dto/login.request.dto'
-import { UserRequestDto } from '@users/dto/users.request.dto'
+import {
+	UserChangeNicknameDto,
+	UserRequestDto
+} from '@users/dto/users.request.dto'
 import { JwtAuthGuard } from '@users/jwt/jwt.guard'
 import { User } from '@users/users.schema'
 import { UsersService } from '@users/users.service'
@@ -46,14 +51,38 @@ export class UsersController {
 		return await this.usersService.jwtLogIn(body)
 	}
 
+	//* 유저 닉네임 변경 api
+	@UseGuards(JwtAuthGuard)
+	@Post('nickname')
+	async changeNickname(
+		@CurrentUser() user: User,
+		@Body() body: UserChangeNicknameDto
+	) {
+		return await this.usersService.changeNickname(user, body)
+	}
+
 	//* 유저 프로필 사진 변경 api
 	@UseGuards(JwtAuthGuard)
 	@UseInterceptors(FileInterceptor('image', multerOptions('users')))
-	@Post('upload')
+	@Post('image')
 	async uploadUserImg(
 		@CurrentUser() user: User,
 		@UploadedFile() file: Express.Multer.File
 	) {
 		return await this.usersService.uploadImg(user, file)
+	}
+
+	//* 유저 프로필 사진 삭제 api
+	@UseGuards(JwtAuthGuard)
+	@Delete('image')
+	async deleteUserImg(@CurrentUser() user: User) {
+		return await this.usersService.deleteImg(user)
+	}
+
+	//* 유저 회원탈퇴 api
+	@Delete(':id')
+	@UseGuards(JwtAuthGuard)
+	deleteUser(@CurrentUser() user: User, @Param('id') targetId: string) {
+		return this.usersService.deleteUser(user, targetId)
 	}
 }

@@ -4,7 +4,7 @@ import { Model } from 'mongoose'
 
 import { Team } from '@teams/teams.schema'
 import { TeamCreateDto } from './dto/team.create.dto'
-import { TeamQueryDto } from './dto/team.query.dto'
+// import { TeamQueryDto } from './dto/team.query.dto'
 
 @Injectable()
 export class TeamsService {
@@ -13,34 +13,10 @@ export class TeamsService {
 	) {}
 
 	//* 모든 팀 조회 service
-	async getAllTeams(payload: TeamQueryDto) {
-		const { goal, limit, skill, skip, key, teamName } = payload
-		const sortKey = key ? key : 'createAt'
-		let teams: Team[]
-
-		if (goal || skill) {
-			//* 팀 종류 필터
-			if (goal !== 'project' && goal !== 'study')
-				throw new HttpException('올바른 값이 아닙니다.', 400)
-			teams = await this.teamModel
-				.find({ goal, skill })
-				.sort({ [sortKey]: -1 })
-				.limit(limit ? Number(limit) : 20)
-				.skip(skip ? Number(skip) : 0)
-		} else if (teamName) {
-			//* 팀 검색
-			teams = await this.teamModel
-				.find({ teamName })
-				.limit(limit ? Number(limit) : 20)
-				.skip(skip ? Number(skip) : 0)
-		} else {
-			//* default
-			teams = await this.teamModel
-				.find()
-				.sort({ [key]: -1 })
-				.limit(limit ? Number(limit) : 20)
-				.skip(skip ? Number(skip) : 0)
-		}
+	async getAllTeams() {
+		const teams = await this.teamModel.find().sort({ createdAt: -1 })
+		// .limit(limit ? Number(limit) : 20)
+		// .skip(skip ? Number(skip) : 0)
 
 		return teams.map(team => team.readOnlyData)
 	}
@@ -50,6 +26,12 @@ export class TeamsService {
 		const team = await this.teamModel.findById(id)
 		if (!team) throw new HttpException('팀이 존재하지 않습니다.', 400)
 		return team.readOnlyData
+	}
+
+	//* 총 팀 갯수 조회 service
+	async getTotalTeam() {
+		const teams = await this.teamModel.find()
+		return teams.length
 	}
 
 	//* 팀 생성 service
@@ -62,13 +44,12 @@ export class TeamsService {
 	}
 
 	//* 조회수 증가 service
-	async incViewCount(postId: string) {
-		const team = await this.teamModel.findById(postId)
+	async incViewCount(teamId: string) {
+		const team = await this.teamModel.findById(teamId)
+		if (!team) throw new HttpException('팀이 존재하지 않습니다.', 400)
 		team.hits += 1
 		const newTeam = await team.save()
 
 		return newTeam.hits
 	}
-
-	//* 좋아요 api
 }

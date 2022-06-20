@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { IsArray, IsNotEmpty, IsString } from 'class-validator'
+import * as dayjs from 'dayjs'
 import { Document, SchemaOptions, Types } from 'mongoose'
 
 import { ITeam, TeamGoalType, TeamSkillType } from '@typings/team'
@@ -34,6 +35,9 @@ export class Team extends Document {
 	@Prop({ default: 0 })
 	hits: number
 
+	@Prop({ default: dayjs().format('YYYY년 MM월 DD일') })
+	createDate: string
+
 	readonly readOnlyData: ITeam
 }
 
@@ -47,6 +51,7 @@ TeamSchema.virtual('readOnlyData').get(function (this: Team) {
 		skills: this.skills,
 		teamName: this.teamName,
 		teamDescription: this.teamDescription,
-		hits: this.hits
+		hits: this.hits,
+		createDate: this.createDate
 	}
 })
