@@ -34,4 +34,5 @@ export interface ITeam {
 	teamName: string
 	teamDescription: string
 	hits: number
+	comments: Comment[]
 }

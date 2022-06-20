@@ -1,7 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { model, Model } from 'mongoose'
 
+import { CommentSchema } from '@comments/comments.schema'
 import { Team } from '@teams/teams.schema'
 import { TeamCreateDto } from './dto/team.create.dto'
 // import { TeamQueryDto } from './dto/team.query.dto'
@@ -14,7 +15,11 @@ export class TeamsService {
 
 	//* 모든 팀 조회 service
 	async getAllTeams() {
-		const teams = await this.teamModel.find().sort({ createdAt: -1 })
+		const CommentsModel = model('comments', CommentSchema)
+		const teams = await this.teamModel
+			.find()
+			.sort({ createdAt: -1 })
+			.populate('comments', CommentsModel)
 		// .limit(limit ? Number(limit) : 20)
 		// .skip(skip ? Number(skip) : 0)
 
@@ -23,7 +28,10 @@ export class TeamsService {
 
 	//* 특정 팀 조회 service
 	async getOneTeam(id: string) {
-		const team = await this.teamModel.findById(id)
+		const CommentsModel = model('comments', CommentSchema)
+		const team = await this.teamModel
+			.findById(id)
+			.populate('comments', CommentsModel)
 		if (!team) throw new HttpException('팀이 존재하지 않습니다.', 400)
 		return team.readOnlyData
 	}
@@ -45,6 +53,7 @@ export class TeamsService {
 
 	//* 조회수 증가 service
 	async incViewCount(teamId: string) {
+		console.log(teamId)
 		const team = await this.teamModel.findById(teamId)
 		if (!team) throw new HttpException('팀이 존재하지 않습니다.', 400)
 		team.hits += 1

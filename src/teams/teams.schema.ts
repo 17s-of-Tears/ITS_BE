@@ -3,6 +3,7 @@ import { IsArray, IsNotEmpty, IsString } from 'class-validator'
 import * as dayjs from 'dayjs'
 import { Document, SchemaOptions, Types } from 'mongoose'
 
+import { Comment } from '@comments/comments.schema'
 import { ITeam, TeamGoalType, TeamSkillType } from '@typings/team'
 
 const options: SchemaOptions = { timestamps: true }
@@ -38,12 +39,14 @@ export class Team extends Document {
 	@Prop({ default: dayjs().format('YYYY년 MM월 DD일') })
 	createDate: string
 
+	readonly comments: Comment[]
+
 	readonly readOnlyData: ITeam
 }
 
-export const TeamSchema = SchemaFactory.createForClass(Team)
+const _TeamSchema = SchemaFactory.createForClass(Team)
 
-TeamSchema.virtual('readOnlyData').get(function (this: Team) {
+_TeamSchema.virtual('readOnlyData').get(function (this: Team) {
 	return {
 		id: this.id,
 		author: this.author,
@@ -52,6 +55,19 @@ TeamSchema.virtual('readOnlyData').get(function (this: Team) {
 		teamName: this.teamName,
 		teamDescription: this.teamDescription,
 		hits: this.hits,
-		createDate: this.createDate
+		createDate: this.createDate,
+		comments:
+			this.comments && this.comments.map(comment => comment.readOnlyData)
 	}
 })
+
+_TeamSchema.virtual('comments', {
+	ref: 'comments',
+	localField: '_id',
+	foreignField: 'info' //* 외래필드
+})
+
+_TeamSchema.set('toObject', { virtuals: true })
+_TeamSchema.set('toJSON', { virtuals: true })
+
+export const TeamSchema = _TeamSchema

@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose'
 
 import { AppController } from '@src/app.controller'
 import { AppService } from '@src/app.service'
+import { CommentsModule } from '@comments/comments.module'
 import { TeamsModule } from '@teams/teams.module'
 import { UsersModule } from '@users/users.module'
 
@@ -12,6 +13,7 @@ import { UsersModule } from '@users/users.module'
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
 		MongooseModule.forRoot(process.env.MONGODB_URI),
+		CommentsModule,
 		TeamsModule,
 		UsersModule
 	],

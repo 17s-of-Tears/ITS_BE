@@ -29,9 +29,9 @@ export class TeamsController {
 	}
 
 	//* 조회수 증가 api
-	@Post('hits/:id')
-	incViewCount(@Body() teamId: string) {
-		return this.teamsService.incViewCount(teamId)
+	@Post('hits')
+	incViewCount(@Body() body: { id: string }) {
+		return this.teamsService.incViewCount(body.id)
 	}
 
 	//* 팀 생성 api
