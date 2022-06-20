@@ -15,6 +15,6 @@ async function bootstrap() {
 		prefix: '/media'
 	}) //* static file 서빙
 
-	await app.listen(PORT)
+	await app.listen(PORT || 3000)
 }
 bootstrap()
