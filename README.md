@@ -1,6 +1,6 @@
 ## its BE
 
-## ing....
+## ing...
 
 ## commit message style
 
